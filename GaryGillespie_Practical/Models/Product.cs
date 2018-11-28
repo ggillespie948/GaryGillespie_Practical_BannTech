@@ -21,11 +21,9 @@ namespace GaryGillespie_Practical.Models
         public string Description { get; set; }
 
         [Required]
-        [DataType(DataType.Currency)]
         public double PurchasePrice { get; set; }
 
         [Required]
-        [DataType(DataType.Currency)]
         public double SalesPrice { get; set; }
 
         public int Quantity { get; set; }
