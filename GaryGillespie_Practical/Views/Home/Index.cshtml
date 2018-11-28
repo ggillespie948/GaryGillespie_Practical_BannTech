@@ -5,7 +5,17 @@
 <div class="jumbotron">
     <h1> Product Management Application </h1>
     <h2> BannTech practical assement project</h2>
-    
-    <a asp-area="" asp-controller="Products" asp-action="Index" class="btn-lg btn-success">View All Products</a>
+
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <br />
+        <h3> Please sign in to view all products </h3>
+        <a asp-area="" asp-controller="Account" asp-action="Register" class="btn-lg btn-success">Register</a>
+        <a asp-area="" asp-controller="Account" asp-action="Login" class="btn-lg btn-success">Log in</a>
+    } else
+    {
+        <a asp-area="" asp-controller="Products" asp-action="Index" class="btn-lg btn-success">View All Products</a>
+    }
+
 
 </div>
