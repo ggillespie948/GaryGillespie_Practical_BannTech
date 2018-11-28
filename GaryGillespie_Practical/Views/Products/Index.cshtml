@@ -35,7 +35,6 @@
             <th>
                 Action
             </th>
-
         </tr>
     </thead>
 </table>
@@ -48,7 +47,7 @@
         <div class="modal-header" id="deleteProductModalHeader">
                 <h3>Are you sure you wish to delete this product?</h3>
             <div id="deleteLoaderDiv"style="display:none;">
-                DELETE IN PROGRESS
+                <i class="fa fa-spinner fa-4x fa-spin" aria-hidden="true"></i>
             </div>
         </div>
             <div class="modal-body" id="deleteProductModalBody">
@@ -116,7 +115,7 @@
                     //after 2.5 seconds remove loader div
                     setTimeout(function () {
                         $('#deleteLoaderDiv').hide();
-                        var successStr = "<h4> Product Deleted. </h4>"
+                        var successStr = "<h4> Product Deleted. </h4> <i class='fa fa-check' aria-hidden='true'></i>"
                         $('#deleteProductModalBody').html(successStr);
                         $('#deleteProductModalFooter').html("");
                         $('#deleteProductModalHeader').html("");
@@ -141,7 +140,6 @@
         });
 
     });
-
 
 
 </script>
