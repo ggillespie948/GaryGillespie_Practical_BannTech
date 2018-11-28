@@ -28,7 +28,7 @@ namespace GaryGillespie_Practical.Models
 
         public int Quantity { get; set; }
 
-        public int LogId { get; set; }
+        public int? LogId { get; set; }
 
         [ForeignKey("LogId")]
         public virtual OperationLog Log { get; set; }
