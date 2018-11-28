@@ -179,13 +179,13 @@ namespace GaryGillespie_Practical.Controllers
 
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed([FromBody] int productId)
         {
-            var product = await _context.Products.SingleOrDefaultAsync(m => m.Id == id);
+            var product = _context.Products.SingleOrDefault(p => p.Id == productId);
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _context.SaveChanges();
+            var response = "success";
+            return Json(response);
         }
 
         private bool ProductExists(int id)

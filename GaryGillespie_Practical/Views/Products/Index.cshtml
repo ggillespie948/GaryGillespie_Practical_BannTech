@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>View All Products</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
 <hr />
 <h1>Data tables</h1>
@@ -32,35 +32,116 @@
             <th>
                 Created By (username)
             </th>
+            <th>
+                Action
+            </th>
+
         </tr>
     </thead>
 </table>
 
 
+<!-- Confirm Deletion Image modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="deleteProductModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header" id="deleteProductModalHeader">
+                <h3>Are you sure you wish to delete this product?</h3>
+            <div id="deleteLoaderDiv"style="display:none;">
+                DELETE IN PROGRESS
+            </div>
+        </div>
+            <div class="modal-body" id="deleteProductModalBody">
+                <!-- Dynamically add information of product to be deleted -->
+            </div>
+            <div class="modal-footer" id="deleteProductModalFooter">
+                <!--Dynamically load footer with id carrying relevant product id -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- -->
+
+
 <script>
+    $(document).ready(function () {
+        //Init DataTables with All Products
+        var table = $('#productsTable').DataTable({
+            "ajax": {
+                "url": "/Products/LoadAllProducts",
+                "type": "GET",
+                "dataType": "json",
+            },
+            "columns": [
+                { "data": "id", "autoWidth": true },
+                { "data": "name", "autoWidth": true },
+                { "data": "salesPrice", render: $.fn.dataTable.render.number(',', '.', 2, '£'), "autoWidth": true },
+                { "data": "quantity", "autoWidth": true },
+                { "data": "log.createdDate", "autoWidth": true },
+                { "data": "log.user.userName", "autoWidth": true },
+                {
+                    "defaultContent": "<button type=\"button\" class=\"btn btn-danger \">Delete Product</button>"
+                }
+            ]
+        });
 
-    // init data tables example
-    //Init DataTables with All Products
-    $('#productsTable').DataTable({
-        "ajax": {
-            "url": "/Products/LoadAllProducts",
-            "type": "GET",
-            "dataType": "json",
-        },
-        "columnDefs": [{
-            "targets": 2,
-            "type": "num-fmt"
-        }],
-        "columns": [
-            { "data": "id", "autoWidth": true },
-            { "data": "name", "autoWidth": true },
-            { "data": "salesPrice", render: $.fn.dataTable.render.number(',', '.', 2, '£'), "autoWidth": true },
-            { "data": "quantity", "autoWidth": true },
-            { "data": "log.createdDate", "autoWidth": true },
-            { "data": "log.user.userName", "autoWidth": true },
+        //Data tables edit button event handler
+        $('#productsTable tbody').on('click', 'button', function () {
+            //todo
+            console.log(table.row($(this).parents('tr')).data());
+            var data = table.row($(this).parents('tr')).data();
+            var dataStr = "id: " + data["id"] + ", " + "name: " + data["name"];
+            $('#deleteProductModalBody').html(dataStr);
 
-        ]
+            var footerHtml = "<a class='btn btn-success' id='cancelDeleteBtn'>Cancel Delete</a> <a asp-action=Delete' class='btn btn-danger' id='confirmDeleteBtn' value=" + data["id"] + ">Yes, Delete this product</a>'";
+            $('#deleteProductModalFooter').html(footerHtml);
+            $('#deleteProductModal').modal("show");
+
+        });
+
+        //Confirm delete product event handler
+        $('#deleteProductModalFooter').on('click', '#confirmDeleteBtn', function () {
+            var delay = 2500; //add response delay to allow modal to close on success
+            var productId = $(this).attr('value');
+            $('#deleteLoaderDiv').show();
+            $.ajax({
+                type: "POST",
+                url: "/Products/Delete",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: JSON.stringify(productId),
+                success: function () {
+                    table.ajax.reload();
+
+                    //after 2.5 seconds remove loader div
+                    setTimeout(function () {
+                        $('#deleteLoaderDiv').hide();
+                        var successStr = "<h4> Product Deleted. </h4>"
+                        $('#deleteProductModalBody').html(successStr);
+                        $('#deleteProductModalFooter').html("");
+                        $('#deleteProductModalHeader').html("");
+                    }, delay);
+
+                    //after 5 seconds close modal
+                    setTimeout(function () {
+                        $('#deleteProductModal').modal("hide");
+                    }, 5000);
+                }
+            })
+        });
+
+        //cancel product item delete button handler
+        $('#deleteProductModalFooter').on('click', '#cancelDeleteBtn', function () {
+            $('#deleteProductModal').modal("hide");
+        });
+
+        //Clear loader modal of data previously contained
+            $('#deleteProductModal').on('hidden.bs.modal', function (e) {
+                $('#deleteProductModal').trigger("reset");
+        });
+
     });
+
 
 
 </script>
