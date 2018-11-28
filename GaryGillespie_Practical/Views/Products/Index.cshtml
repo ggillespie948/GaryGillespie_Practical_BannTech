@@ -79,23 +79,28 @@
                 { "data": "log.createdDate", "autoWidth": true },
                 { "data": "log.user.userName", "autoWidth": true },
                 {
-                    "defaultContent": "<button type=\"button\" class=\"btn btn-danger \">Delete Product</button>"
+                    "defaultContent": "<button type=\"button\" class=\"edit btn btn-warning \">Edit Product</button> <button type=\"button\" class=\"delete btn btn-danger \">Delete Product</button>"
                 }
             ]
         });
 
-        //Data tables edit button event handler
-        $('#productsTable tbody').on('click', 'button', function () {
-            //todo
-            console.log(table.row($(this).parents('tr')).data());
+        //Data tables delete button event handler
+        $('#productsTable tbody').on('click', 'button.delete', function () {
+
             var data = table.row($(this).parents('tr')).data();
             var dataStr = "id: " + data["id"] + ", " + "name: " + data["name"];
             $('#deleteProductModalBody').html(dataStr);
-
             var footerHtml = "<a class='btn btn-success' id='cancelDeleteBtn'>Cancel Delete</a> <a asp-action=Delete' class='btn btn-danger' id='confirmDeleteBtn' value=" + data["id"] + ">Yes, Delete this product</a>'";
             $('#deleteProductModalFooter').html(footerHtml);
             $('#deleteProductModal').modal("show");
 
+        });
+
+        //Data tables edit button event handler
+        $('#productsTable tbody').on('click', 'button.edit', function () {
+            var data = table.row($(this).parents('tr')).data();
+            var url = "/Products/Edit?id=" + data["id"];
+            window.location.href = url; 
         });
 
         //Confirm delete product event handler

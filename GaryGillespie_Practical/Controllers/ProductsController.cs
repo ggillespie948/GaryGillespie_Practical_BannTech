@@ -158,25 +158,6 @@ namespace GaryGillespie_Practical.Controllers
             return View(product);
         }
 
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.Log)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed([FromBody] int productId)
