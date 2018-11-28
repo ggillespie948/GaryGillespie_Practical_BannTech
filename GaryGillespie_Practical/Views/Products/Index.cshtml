@@ -71,6 +71,11 @@
                 "type": "GET",
                 "dataType": "json",
             },
+            "columnDefs": [{
+                targets: 4, render: function (data) {
+                    return moment(data).format('DD/MM/YYYY');
+                }
+            }],
             "columns": [
                 { "data": "id", "autoWidth": true },
                 { "data": "name", "autoWidth": true },
