@@ -50,26 +50,7 @@ namespace GaryGillespie_Practical.Controllers
             var data = prodcuts;
             return Json(new { data });
         }
-
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.Log)
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
+                
         // GET: Products/Create
         public IActionResult Create()
         {
