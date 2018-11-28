@@ -30,8 +30,25 @@ namespace GaryGillespie_Practical.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Log);
-            return View(await applicationDbContext.ToListAsync());
+            var products = _context.Products
+                .Include(p => p.Log); //eager load operations log
+            return View(await products.ToListAsync());
+        }
+
+        /// <summary>
+        /// Action result used by datatables to load all products and lazy (eagerly) load
+        /// the related operations log, and related operation log application user
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult LoadAllProducts()
+        {
+            var prodcuts = _context.Products
+                .Include(product => product.Log)
+                .ThenInclude(log => log.User)
+                .ToList();
+
+            var data = prodcuts;
+            return Json(new { data });
         }
 
         // GET: Products/Details/5
